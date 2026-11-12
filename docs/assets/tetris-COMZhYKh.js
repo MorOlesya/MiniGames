@@ -1,0 +1,23 @@
+function e(e,t){let n={I:[[1,1,1,1]],O:[[1,1],[1,1]],T:[[0,1,0],[1,1,1]],S:[[0,1,1],[1,1,0]],Z:[[1,1,0],[0,1,1]],J:[[1,0,0],[1,1,1]],L:[[0,0,1],[1,1,1]]},r={I:`#00f0f0`,O:`#f0f000`,T:`#a000f0`,S:`#00f000`,Z:`#f00000`,J:`#0000f0`,L:`#f0a000`},i,a,o,s,c,l,u,d,f,p,m,h;e.innerHTML=`
+    <header class="game-header">
+      <button class="back-btn" title="Назад">←</button>
+      <h2>Тетрис</h2>
+      <button class="icon-btn" id="t-restart" title="Новая игра">↻</button>
+    </header>
+    <div class="tetris-wrap">
+      <canvas id="tetris-canvas" width="300" height="600"></canvas>
+      <div class="tetris-side">
+        <div class="score-box"><span>Счёт</span><strong id="t-score">0</strong></div>
+        <div class="score-box"><span>Линии</span><strong id="t-lines">0</strong></div>
+        <div class="score-box"><span>Уровень</span><strong id="t-level">1</strong></div>
+        <div class="score-box"><span>Рекорд</span><strong id="t-best">0</strong></div>
+      </div>
+    </div>
+    <div class="tetris-touch">
+      <button data-act="left">◀</button>
+      <button data-act="rotate">⟳</button>
+      <button data-act="right">▶</button>
+      <button data-act="down">▼</button>
+      <button data-act="drop">⤓</button>
+    </div>
+  `;let g=e.querySelector(`#tetris-canvas`),_=g.getContext(`2d`),v=g.width/10,y=e.querySelector(`#t-score`),b=e.querySelector(`#t-lines`),x=e.querySelector(`#t-level`),S=e.querySelector(`#t-best`);S.textContent=Number(localStorage.getItem(`tetris_best`))||0;function C(){let e=Object.keys(n),t=e[Math.floor(Math.random()*e.length)];return{shape:n[t].map(e=>e.slice()),color:r[t]}}function w(){i=Array.from({length:20},()=>Array(10).fill(null)),c=0,l=0,u=1,d=!1,f=800,p=0,T(),A()}function T(){a=C(),o=Math.floor((10-a.shape[0].length)/2),s=0,E(o,s,a.shape)&&(d=!0)}function E(e,t,n){for(let r=0;r<n.length;r++)for(let a=0;a<n[r].length;a++){if(!n[r][a])continue;let o=e+a,s=t+r;if(o<0||o>=10||s>=20||s>=0&&i[s][o])return!0}return!1}function D(e){let t=e.length,n=e[0].length,r=Array.from({length:n},()=>Array(t).fill(0));for(let i=0;i<t;i++)for(let a=0;a<n;a++)r[a][t-1-i]=e[i][a];return r}function O(){for(let e=0;e<a.shape.length;e++)for(let t=0;t<a.shape[e].length;t++)if(a.shape[e][t]){let n=s+e,r=o+t;n>=0&&(i[n][r]=a.color)}if(k(),T(),d){let e=Number(localStorage.getItem(`tetris_best`))||0;c>e&&localStorage.setItem(`tetris_best`,c)}}function k(){let e=0;for(let t=19;t>=0;t--)i[t].every(e=>e)&&(i.splice(t,1),i.unshift(Array(10).fill(null)),e++,t++);e&&(l+=e,c+=[0,100,300,500,800][e]*u,u=Math.floor(l/10)+1,f=Math.max(100,800-(u-1)*70),A())}function A(){y.textContent=c,b.textContent=l,x.textContent=u}function j(e,t,n){_.fillStyle=n,_.fillRect(e*v+1,t*v+1,v-2,v-2),_.fillStyle=`rgba(255,255,255,0.2)`,_.fillRect(e*v+1,t*v+1,v-2,3)}function M(){_.fillStyle=`#111`,_.fillRect(0,0,g.width,g.height),_.strokeStyle=`rgba(255,255,255,0.05)`;for(let e=0;e<=10;e++)_.beginPath(),_.moveTo(e*v,0),_.lineTo(e*v,g.height),_.stroke();for(let e=0;e<=20;e++)_.beginPath(),_.moveTo(0,e*v),_.lineTo(g.width,e*v),_.stroke();for(let e=0;e<20;e++)for(let t=0;t<10;t++)i[e][t]&&j(t,e,i[e][t]);if(a&&!d)for(let e=0;e<a.shape.length;e++)for(let t=0;t<a.shape[e].length;t++)a.shape[e][t]&&j(o+t,s+e,a.color);d&&(_.fillStyle=`rgba(0,0,0,0.75)`,_.fillRect(0,0,g.width,g.height),_.fillStyle=`#f87171`,_.font=`bold 28px system-ui`,_.textAlign=`center`,_.fillText(`GAME OVER`,g.width/2,g.height/2-10),_.fillStyle=`#fff`,_.font=`16px system-ui`,_.fillText(`Счёт: ${c}`,g.width/2,g.height/2+25))}function N(e){m||=e;let t=e-m;m=e,d||(p+=t,p>=f&&(p=0,E(o,s+1,a.shape)?O():s++)),M(),h=requestAnimationFrame(N)}function P(){!d&&!E(o-1,s,a.shape)&&o--}function F(){!d&&!E(o+1,s,a.shape)&&o++}function I(){!d&&!E(o,s+1,a.shape)&&(s++,c++,A())}function L(){if(!d){for(;!E(o,s+1,a.shape);)s++,c+=2;A(),O()}}function R(){if(d)return;let e=D(a.shape);for(let t of[0,-1,1,-2,2])if(!E(o+t,s,e)){a.shape=e,o+=t;return}}function z(e){e.key===`ArrowLeft`&&(e.preventDefault(),P()),e.key===`ArrowRight`&&(e.preventDefault(),F()),e.key===`ArrowDown`&&(e.preventDefault(),I()),e.key===`ArrowUp`&&(e.preventDefault(),R()),e.key===` `&&(e.preventDefault(),L())}return document.addEventListener(`keydown`,z),e.querySelectorAll(`.tetris-touch button`).forEach(e=>{e.addEventListener(`click`,()=>{let t=e.dataset.act;t===`left`&&P(),t===`right`&&F(),t===`down`&&I(),t===`rotate`&&R(),t===`drop`&&L()})}),e.querySelector(`#t-restart`).addEventListener(`click`,()=>{cancelAnimationFrame(h),m=0,w(),h=requestAnimationFrame(N)}),e.querySelector(`.back-btn`).addEventListener(`click`,t),w(),h=requestAnimationFrame(N),()=>{cancelAnimationFrame(h),document.removeEventListener(`keydown`,z)}}export{e as mount};
